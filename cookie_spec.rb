@@ -1,4 +1,4 @@
-
+require 'byebug'
 require 'rspec'
 
 require_relative 'cookie'
@@ -23,16 +23,20 @@ describe Cookie do
   end
 
   describe "#type" do
-    it "returns the type of the cookie"
-
+    it "returns the type of the cookie" do
+      expect(cookie.type).to eq(type)
+    end
   end
 
   describe "#bake!" do
-    it "requires an integer time argument"
+    it "requires an integer time argument" do
+      expect(cookie).to receive(:bake!).with(an_instance_of(Integer))
+      cookie.bake!(5)
+    end
 
-
-    it "returns the cookie object"
-
+    it "returns the cookie object" do
+      expect(cookie.bake!(5)).to be_a_kind_of(Cookie)
+    end
 
     it "changes the status of the cookie when given enough time" do
       expect { cookie.bake!(10) }.to change(cookie, :status)
@@ -40,32 +44,42 @@ describe Cookie do
   end
 
   describe "#status" do
-    it "returns the cookie's current status"
-
+    it "returns the cookie's current status" do
+      expect([:doughy, :almost_ready, :ready, :burned]).to include(cookie.status)
+    end
 
     context "when unbaked" do
-      it "is `:doughy`"
-
+      it "is `:doughy`" do
+        expect(cookie.status).to eq :doughy
+      end
     end
 
     context "when baked for less than 7 minutes" do
-      it "is `:doughy`"
-
+      it "is `:doughy`" do
+        cookie.bake!(6)
+        expect(cookie.status).to eq :doughy
+      end
     end
 
     context "when baked for at least 7 but less than 10 minutes" do
-      it "is `:almost_ready`"
-
+      it "is `:almost_ready`" do
+        cookie.bake!(9)
+        expect(cookie.status).to eq :almost_ready
+      end
     end
 
     context "when baked for at least 10 but less than 12 minutes" do
-      it "is `:ready`"
-
+      it "is `:ready`" do
+        cookie.bake!(11)
+        expect(cookie.status).to eq :ready
+      end
     end
 
     context "when baked for at least 12 minutes" do
-      it "is `:burned`"
-
+      it "is `:burned`" do
+        cookie.bake!(12)
+        expect(cookie.status).to eq :burned
+      end
     end
   end
 end
